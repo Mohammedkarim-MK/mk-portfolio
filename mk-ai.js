@@ -10,14 +10,14 @@
   // ── Configuration ────────────────────────────────────────────────────────────
   // Groq key enables the AI to work even when the backend server is offline.
   // Get a free key at https://console.groq.com (no credit card needed).
-  const GROQ_KEY   = 'YOUR_GROQ_API_KEY_HERE';
+  const GROQ_KEY   = ''; // Key is now handled server-side via Netlify function
   const GROQ_MODEL = 'meta-llama/llama-4-maverick-17b-128e-instruct';
   const GROQ_MODEL_FALLBACK = 'llama-3.3-70b-versatile';
   const GROQ_URL   = 'https://api.groq.com/openai/v1/chat/completions';
 
   // Backend URL: update this to your deployed Render URL after deployment
   // e.g. 'https://mkinsight-backend.onrender.com'  — leave '/' for local dev
-  const BACKEND_URL = '';
+  const BACKEND_URL = '/api/chat'; // Netlify serverless function
 
   const SYSTEM_PROMPT = `You are MK-AI, a highly capable, knowledgeable AI assistant built into Mohammed Karim's portfolio website (mkinsight.com). You give direct, accurate, and helpful answers on ANY topic. No question is too simple or too complex.
 
