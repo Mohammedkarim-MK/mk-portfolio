@@ -1,0 +1,23 @@
+# =============================================================================
+# wrangler.toml — Cloudflare Workers Configuration
+# MK Portfolio — Mohammed Karim
+# =============================================================================
+# Install Wrangler: npm install -g wrangler
+# Login:           wrangler login
+# Deploy chat:     wrangler deploy --config wrangler.toml --name mk-ai-chat
+# Deploy contact:  wrangler deploy --config wrangler-contact.toml --name mk-contact
+# =============================================================================
+
+name          = "mk-ai-chat"
+main          = "workers/chat.js"
+compatibility_date = "2024-01-01"
+
+# Secrets (set via CLI — never in this file):
+# wrangler secret put GROQ_API_KEY
+
+# =============================================================================
+# Routes — uncomment after deploying to link to your domain
+# =============================================================================
+# [[routes]]
+#   pattern = "mohammedkarim-mk.github.io/api/chat"
+#   zone_name = "mohammedkarim-mk.github.io"
