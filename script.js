@@ -218,19 +218,18 @@ function closeModal() {
     formStatus.textContent = '';
 
     try {
-      // Submit to Netlify Forms (stores in dashboard) + fallback to /api/contact
-      const formData = new URLSearchParams({
-        'form-name': 'contact',
-        'name':      payload.name,
-        'email':     payload.email,
-        'subject':   payload.subject || '',
-        'message':   payload.message,
-      });
-
-      const res = await fetch('/', {
+      // Submit to Formspree — works on GitHub Pages, stores submissions, emails you
+      // Replace YOUR_FORMSPREE_ID below with your ID from formspree.io/new
+      const FORMSPREE_ID = 'YOUR_FORMSPREE_ID';
+      const res = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
         method:  'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body:    formData.toString(),
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body:    JSON.stringify({
+          name:    payload.name,
+          email:   payload.email,
+          subject: payload.subject || '',
+          message: payload.message,
+        }),
       });
 
       if (res.ok){
