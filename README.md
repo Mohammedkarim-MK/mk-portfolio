@@ -1,115 +1,153 @@
-# MK Portfolio 🌐
+<div align="center">
 
-A modern, interactive personal portfolio website built by **Mohammed Karim** — featuring AI integration, dynamic animations, and a clean professional design.
+# MK Portfolio
 
----
+**Mohammed Karim — Data Analyst · Web Developer · Content Creator**
 
-## ✨ Features
+[![Live Site](https://img.shields.io/badge/Live%20Site-mk--portfolio.netlify.app-ff2a2a?style=for-the-badge&logo=netlify)](https://mk-portfolio.netlify.app)
+[![GitHub](https://img.shields.io/badge/GitHub-Mohammedkarim--MK-181717?style=for-the-badge&logo=github)](https://github.com/Mohammedkarim-MK)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
 
-- 🤖 **MK-AI Assistant** — Built-in AI chat interface for visitor interaction
-- 🎨 **Living Core** — Animated visual experience page
-- 👤 **Profile Frame** — Dynamic profile showcase
-- 📱 **Fully Responsive** — Works across all devices and screen sizes
-- ⚡ **Smooth Animations** — CSS & JS powered transitions and effects
-- 📬 **Contact Page** — Professional contact form and details
-- 🌙 **Modern UI/UX** — Clean, dark-themed aesthetic
+</div>
 
 ---
 
-## 🛠️ Tech Stack
+## About
 
-| Technology | Usage |
+Personal portfolio website for Mohammed Karim — BSc Computer Science student at Liverpool John Moores University. Built from scratch with vanilla HTML, CSS, and JavaScript. Features an AI assistant (MK-AI), animated UI, and a secure Netlify backend.
+
+---
+
+## Features
+
+- **MK-AI Assistant** — AI chat powered by Groq (Llama 4), proxied securely via Netlify Functions
+- **Animated Hero** — Decoder-style typewriter, floating particles, 3D tilt effects
+- **Dark / Light Theme** — Persistent theme toggle with smooth transitions
+- **Experience Timeline** — Interactive modals for each role
+- **Skills Dashboard** — Animated progress rings and skill bars
+- **Contact Form** — Email verification flow via `/api/contact`
+- **Living Core** — Generative canvas animation page
+- **Fully Responsive** — Mobile-first, works on all devices
+- **Accessible** — Skip-to-content, ARIA labels, keyboard navigation
+- **SEO Ready** — Open Graph, Twitter Card, canonical URLs, meta descriptions
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
 |---|---|
-| HTML5 | Page structure & markup |
-| CSS3 | Styling, animations, responsive layout |
-| JavaScript (Vanilla) | Interactivity, AI integration, dynamic content |
-| GitHub Pages | Hosting & deployment |
+| Markup | HTML5 (semantic, accessible) |
+| Styling | CSS3 (custom properties, animations, grid, flexbox) |
+| Logic | Vanilla JavaScript (ES2021, IIFEs, async/await) |
+| AI | Groq API — Llama 4 Maverick |
+| Backend | Netlify Functions (Node.js serverless) |
+| Hosting | Netlify (primary) + GitHub Pages |
+| Fonts | Google Fonts — Syne, DM Sans, Cormorant Garamond |
+| Tooling | ESLint, Prettier, live-server |
 
 ---
 
-## 🚀 How to Run
-
-### Option 1 — Open Locally
-```bash
-# Clone the repository
-git clone https://github.com/Mohammedkarim-MK/mk-portfolio.git
-
-# Navigate into the project
-cd mk-portfolio
-
-# Open in browser
-open index.html
-```
-
-### Option 2 — GitHub Pages
-Visit the live site at:
-```
-https://Mohammedkarim-MK.github.io/mk-portfolio
-```
-
----
-
-## 📁 Folder Structure
+## Project Structure
 
 ```
 mk-portfolio/
-├── index.html              # Home page
-├── about.html              # About me page
-├── contact.html            # Contact page
-├── README.md               # Project documentation
+├── index.html                  # Home — hero, skills, experience, projects
+├── about.html                  # About Me — bio, photo, education
+├── contact.html                # Contact — form with email verification
+├── MK-AI.html                  # AI Chat assistant interface
+├── living-core.html            # Generative canvas animation
+├── profile-frame.html          # Profile showcase embed
 │
-├── pages/
-│   ├── MK-AI.html          # AI assistant interface
-│   ├── living-core.html    # Animated living core page
-│   └── profile-frame.html  # Profile showcase frame
+├── styles.css                  # Global stylesheet (19 sections, documented)
+├── script.js                   # Shared JS — animations, modals, forms
+├── mk-ai.js                    # MK-AI logic — streaming, history, UI
 │
-└── assets/
-    ├── css/
-    │   └── styles.css      # Global styles & animations
-    ├── js/
-    │   ├── script.js       # Main JavaScript logic
-    │   └── mk-ai.js        # AI assistant logic
-    └── images/
-        ├── mklogo.png      # MK brand logo
-        └── karim_png.png   # Profile image
+├── netlify/
+│   └── functions/
+│       └── chat.js             # Serverless proxy — keeps Groq key secret
+│
+├── netlify.toml                # Netlify config — redirects, headers, functions
+├── package.json                # Dev tooling — ESLint, Prettier, live-server
+├── .eslintrc.json              # JavaScript linting rules
+├── .prettierrc                 # Code formatting config
+├── .gitignore                  # Excludes secrets, node_modules, OS files
+├── CHANGELOG.md                # Version history
+├── SECURITY.md                 # Security practices
+└── README.md                   # This file
 ```
 
 ---
 
-## 🌐 Live Demo
+## Getting Started
 
-🔗 [View Portfolio](https://Mohammedkarim-MK.github.io/mk-portfolio)
+### Prerequisites
+- Node.js 18+
+- A [Groq API key](https://console.groq.com) (free)
+
+### Run Locally
+
+```bash
+# 1. Clone the repo
+git clone https://github.com/Mohammedkarim-MK/mk-portfolio.git
+cd mk-portfolio
+
+# 2. Install dev tools
+npm install
+
+# 3. Add your Groq key to mk-ai.js (local only — never commit)
+# Find: const GROQ_KEY = '';
+# Replace with: const GROQ_KEY = 'your_key_here';
+
+# 4. Start local server
+npm run dev
+# Opens at http://localhost:3000
+```
+
+### Deploy to Netlify
+
+1. Push to GitHub
+2. Connect repo on [netlify.com](https://netlify.com)
+3. Add environment variable: `GROQ_API_KEY` = your Groq key
+4. Deploy — MK-AI will work fully on the live site
 
 ---
 
-## 📄 License
+## Environment Variables
 
-This project is licensed under the **MIT License** — see below for details.
+| Variable | Description | Where to set |
+|---|---|---|
+| `GROQ_API_KEY` | Groq API key for MK-AI | Netlify → Environment Variables |
+
+**Never commit API keys.** See [SECURITY.md](SECURITY.md) for full security policy.
+
+---
+
+## Scripts
+
+```bash
+npm run dev       # Start local dev server on port 3000
+npm run lint      # Lint JavaScript with ESLint
+npm run format    # Format all files with Prettier
+npm run validate  # Validate HTML files
+```
+
+---
+
+## License
+
+MIT License — see [LICENSE](LICENSE) for details.
 
 ```
-MIT License
-
 Copyright (c) 2025 Mohammed Karim
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
 ```
 
 ---
 
-<p align="center">Made with ❤️ by <strong>Mohammed Karim</strong></p>
+<div align="center">
+
+Made with ❤️ by **Mohammed Karim** · Liverpool, UK
+
+[Portfolio](https://mk-portfolio.netlify.app) · [GitHub](https://github.com/Mohammedkarim-MK) · [Contact](https://mk-portfolio.netlify.app/contact.html)
+
+</div>
