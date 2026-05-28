@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://mohammedkarim-mk.github.io/mk-portfolio/sitemap.xml
+Sitemap: https://mkinsight.pages.dev/sitemap.xml
