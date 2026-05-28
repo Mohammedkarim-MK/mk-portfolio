@@ -38,3 +38,7 @@ logs/
 
 # Netlify
 .netlify/
+
+# Test coverage output
+coverage/
+.nyc_output/
