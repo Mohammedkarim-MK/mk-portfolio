@@ -47,61 +47,39 @@
 })();
 
 // ----- Scroll reveal: cards with slide direction awareness ------------------
-(function reveal(){
-  const cards = document.querySelectorAll('.card');
-  if (!cards.length) return;
-
-  const colLeft = document.querySelector('.col-left');
-  const colRight = document.querySelector('.col-right');
-
-  cards.forEach(card => {
-    if (colLeft && colLeft.contains(card)) card.classList.add('slide-left');
-    else if (colRight && colRight.contains(card)) card.classList.add('slide-right');
+// ----- Animate a single card ------------------------------------------------
+function animateCard(card) {
+  card.classList.add('visible');
+  card.querySelectorAll('.skill-fill').forEach(el => {
+    el.style.transform = `scaleX(${el.dataset.w})`;
   });
+  card.querySelectorAll('.ring-val').forEach(el => {
+    const pct = parseInt(el.dataset.pct);
+    const circ = 2 * Math.PI * 28;
+    setTimeout(() => { el.style.strokeDashoffset = circ - (pct / 100) * circ; }, 150);
+  });
+}
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((e, idx) => {
-      if (!e.isIntersecting) return;
-      e.target.classList.add('visible');
-      e.target.querySelectorAll('.skill-fill').forEach(el => {
-        el.style.transform = `scaleX(${el.dataset.w})`;
-      });
-      e.target.querySelectorAll('.ring-val').forEach(el => {
-        const pct = parseInt(el.dataset.pct);
-        const circ = 2 * Math.PI * 28;
-        setTimeout(() => { el.style.strokeDashoffset = circ - (pct / 100) * circ; }, 150);
-      });
-      observer.unobserve(e.target);
-    });
-  }, { threshold: 0.01, rootMargin: '0px 0px -20px 0px' });
+// ----- Reveal all cards immediately (no scroll needed) ----------------------
+function revealAllCards() {
+  const colLeft  = document.querySelector('.col-left');
+  const colRight = document.querySelector('.col-right');
+  const cards    = document.querySelectorAll('.card');
 
   cards.forEach((card, i) => {
-    card.style.transitionDelay = `${i * 0.045}s`;
-    observer.observe(card);
+    // Add slide direction class
+    if (colLeft  && colLeft.contains(card))  card.classList.add('slide-left');
+    if (colRight && colRight.contains(card)) card.classList.add('slide-right');
+
+    // Animate with staggered delay
+    setTimeout(() => animateCard(card), 100 + i * 80);
   });
+}
 
-  // Fallback: force all cards visible after 1.5s if observer hasn't fired
-  setTimeout(() => {
-    cards.forEach(card => {
-      if (!card.classList.contains('visible')) {
-        card.classList.add('visible');
-        card.querySelectorAll('.skill-fill').forEach(el => {
-          el.style.transform = `scaleX(${el.dataset.w})`;
-        });
-        card.querySelectorAll('.ring-val').forEach(el => {
-          const pct = parseInt(el.dataset.pct);
-          const circ = 2 * Math.PI * 28;
-          el.style.strokeDashoffset = circ - (pct / 100) * circ;
-        });
-      }
-    });
-  }, 1500);
-})();
-
-// ----- Stat bars + counting numbers on load ---------------------------------
+// ----- Stat counters --------------------------------------------------------
 function runCounters() {
   document.querySelectorAll('.stat-fill').forEach(el => {
-    setTimeout(() => { el.style.transform = `scaleX(${el.dataset.w})`; }, 300);
+    setTimeout(() => { el.style.transform = `scaleX(${el.dataset.w ?? 1})`; }, 300);
   });
   document.querySelectorAll('[data-count]').forEach(el => {
     if (el.dataset.animated) return;
@@ -110,15 +88,40 @@ function runCounters() {
     const suffix = el.dataset.suffix || '';
     let cur = 0;
     const t = setInterval(() => {
-      cur = Math.min(cur + Math.ceil(target / 40), target);
+      cur = Math.min(cur + Math.ceil(target / 30), target);
       el.textContent = cur + suffix;
       if (cur >= target) clearInterval(t);
-    }, 28);
+    }, 30);
   });
 }
-// Run on both DOMContentLoaded and load for reliability
-document.addEventListener('DOMContentLoaded', runCounters);
-window.addEventListener('load', runCounters);
+
+// ----- Run everything on DOMContentLoaded -----------------------------------
+document.addEventListener('DOMContentLoaded', () => {
+  revealAllCards();
+  runCounters();
+});
+
+// Also on load as safety net
+window.addEventListener('load', () => {
+  revealAllCards();
+  runCounters();
+});
+
+// Intersection observer for cards that enter viewport after scroll
+(function setupObserver() {
+  const cards = document.querySelectorAll('.card');
+  if (!cards.length) return;
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      animateCard(e.target);
+      observer.unobserve(e.target);
+    });
+  }, { threshold: 0.01 });
+  cards.forEach(card => {
+    if (!card.classList.contains('visible')) observer.observe(card);
+  });
+})();
 
 // ----- Subtle 3D tilt on hero cards -----------------------------------------
 (function tilt(){
