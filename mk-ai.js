@@ -17,7 +17,7 @@
 
   // Backend URL: update this to your deployed Render URL after deployment
   // e.g. 'https://mkinsight-backend.onrender.com'  — leave '/' for local dev
-  const BACKEND_URL = 'https://mk-ai-chat.YOUR-SUBDOMAIN.workers.dev'; // Cloudflare Worker URL — update after deploying
+  const BACKEND_URL = 'https://mk-ai-chat.mohammed-kareem7707.workers.dev'; // Cloudflare Worker — MK-AI backend
 
   const SYSTEM_PROMPT = `You are MK-AI, a highly capable, knowledgeable AI assistant built into Mohammed Karim's portfolio website (mkinsight.com). You give direct, accurate, and helpful answers on ANY topic. No question is too simple or too complex.
 
