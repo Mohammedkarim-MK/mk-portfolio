@@ -219,7 +219,7 @@ function closeModal() {
 
     try {
       // Submit to Cloudflare Worker — secure backend, emails Mohammed on every submission
-      const CONTACT_WORKER = 'https://mk-contact.YOUR-SUBDOMAIN.workers.dev'; // Update after deploying
+      const CONTACT_WORKER = 'https://mk-contact.mohammed-kareem7707.workers.dev'; // Cloudflare Worker — contact backend
       const res = await fetch(CONTACT_WORKER, {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
