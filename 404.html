@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>404 — Page Not Found | Mohammed Karim</title>
+  <meta name="description" content="Page not found — Mohammed Karim Portfolio"/>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@700&family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <script>if(localStorage.getItem('mk_theme')==='light')document.documentElement.setAttribute('data-theme','light');</script>
+  <style>
+    .error-wrap{
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:2rem;
+      position:relative;
+      z-index:10;
+    }
+    .error-code{
+      font-family:'Cormorant Garamond',serif;
+      font-size:clamp(100px,20vw,180px);
+      font-weight:700;
+      line-height:1;
+      background:linear-gradient(135deg,#ff5252 0%,#c40d0d 100%);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+      filter:drop-shadow(0 0 40px rgba(255,42,42,0.4));
+      margin-bottom:0.5rem;
+    }
+    .error-title{
+      font-family:'Syne',sans-serif;
+      font-size:clamp(18px,4vw,28px);
+      font-weight:700;
+      color:var(--text,#fbfbfb);
+      margin-bottom:1rem;
+    }
+    .error-desc{
+      font-size:16px;
+      color:var(--muted2,#b5b5b5);
+      max-width:420px;
+      line-height:1.7;
+      margin-bottom:2.5rem;
+    }
+    .error-actions{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      justify-content:center;
+    }
+    .error-glow{
+      position:absolute;
+      width:400px;
+      height:400px;
+      background:radial-gradient(circle,rgba(255,42,42,0.08) 0%,transparent 70%);
+      pointer-events:none;
+      top:50%;
+      left:50%;
+      transform:translate(-50%,-50%);
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-canvas">
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
+  </div>
+  <div id="particles"></div>
+
+  <div class="error-wrap">
+    <div class="error-glow"></div>
+    <div class="error-code">404</div>
+    <div class="error-title">Page Not Found</div>
+    <p class="error-desc">
+      This page doesn't exist or has been moved.<br/>
+      Let's get you back on track.
+    </p>
+    <div class="error-actions">
+      <a class="btn-primary" href="index.html">← Back to Home</a>
+      <a class="btn-secondary" href="MK-AI.html">✦ Ask MK-AI</a>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
