@@ -218,18 +218,12 @@ function closeModal() {
     formStatus.textContent = '';
 
     try {
-      // Submit to Formspree — works on GitHub Pages, stores submissions, emails you
-      // Replace YOUR_FORMSPREE_ID below with your ID from formspree.io/new
-      const FORMSPREE_ID = 'YOUR_FORMSPREE_ID';
-      const res = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
+      // Submit to Cloudflare Worker — secure backend, emails Mohammed on every submission
+      const CONTACT_WORKER = 'https://mk-contact.YOUR-SUBDOMAIN.workers.dev'; // Update after deploying
+      const res = await fetch(CONTACT_WORKER, {
         method:  'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body:    JSON.stringify({
-          name:    payload.name,
-          email:   payload.email,
-          subject: payload.subject || '',
-          message: payload.message,
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(payload),
       });
 
       if (res.ok){
