@@ -1,6 +1,6 @@
 // =============================================================================
 // MK-AI — Universal AI Chat Interface
-// Primary:   Direct Groq API (set GROQ_KEY for local use)
+// Primary:   Backend server (/api/chat) — Groq / Anthropic Claude / Ollama
 // Secondary: Direct Groq API (browser fallback) — set GROQ_KEY for standalone
 // Fallback:  Built-in response pools for offline mode
 // =============================================================================
@@ -10,14 +10,14 @@
   // ── Configuration ────────────────────────────────────────────────────────────
   // Groq key enables the AI to work even when the backend server is offline.
   // Get a free key at https://console.groq.com (no credit card needed).
-  const GROQ_KEY   = ''; // Leave empty — key is stored securely in Cloudflare Worker secrets
+  const GROQ_KEY   = '' // key handled by Cloudflare Worker;
   const GROQ_MODEL = 'meta-llama/llama-4-maverick-17b-128e-instruct';
   const GROQ_MODEL_FALLBACK = 'llama-3.3-70b-versatile';
   const GROQ_URL   = 'https://api.groq.com/openai/v1/chat/completions';
 
   // Backend URL: update this to your deployed Render URL after deployment
   // e.g. 'https://mkinsight-backend.onrender.com'  — leave '/' for local dev
-  const BACKEND_URL = 'https://mk-ai-chat.mohammed-kareem7707.workers.dev'; // Cloudflare Worker — MK-AI backend
+  const BACKEND_URL = 'https://mk-ai-chat.mohammed-kareem7707.workers.dev';
 
   const SYSTEM_PROMPT = `You are MK-AI, a highly capable, knowledgeable AI assistant built into Mohammed Karim's portfolio website (mkinsight.com). You give direct, accurate, and helpful answers on ANY topic. No question is too simple or too complex.
 
@@ -336,7 +336,7 @@ CRITICAL: Never say "I'm not sure what you're asking" or "Could you be more spec
 
   // ── Direct Groq API call (browser fallback — no server needed) ───────────────
   async function callGroqDirect(text, priorHistory) {
-    if (!GROQ_KEY && !BACKEND_URL) return null; // Use backend if available even without local key
+    if (!GROQ_KEY) return null;
     try {
       const msgs = [{ role: 'system', content: SYSTEM_PROMPT }];
       priorHistory.forEach(m => {
