@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables — NEVER commit these
+.env
+.env.local
+.env.development
+.env.production
+*.env
+
+# Local config with real API keys
+config.local.js
+secrets.js
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor files
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+
+# Build output
+dist/
+build/
+.cache/
+
+# Logs
+logs/
+*.log
+
+# Netlify
+.netlify/
