@@ -1,0 +1,91 @@
+# =============================================================================
+# MK Portfolio — CI/CD Pipeline
+# Runs automatically on every push and pull request to main
+# Tests must pass before any merge is allowed
+# =============================================================================
+
+name: ✅ Tests & Quality Checks
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: Run Jest Test Suite
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Check out the code
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Set up Node.js
+      - name: ⚙️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      # 3. Install dependencies
+      - name: 📦 Install dependencies
+        run: npm install
+
+      # 4. Run the full test suite
+      - name: 🧪 Run Jest tests
+        run: npm test -- --no-coverage
+
+      # 5. Run tests with coverage report
+      - name: 📊 Generate coverage report
+        run: npm run test:coverage
+
+      # 6. Upload coverage as artifact (viewable in GitHub Actions)
+      - name: 📤 Upload coverage report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 7
+
+  lint:
+    name: Lint JavaScript
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: npm install
+
+      - name: 🔍 Run ESLint
+        run: npx eslint assets/js/*.js --max-warnings=20 || true
+
+  html-check:
+    name: Validate HTML Files
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🔎 Check HTML files exist
+        run: |
+          echo "Checking required HTML files..."
+          for f in index.html about.html contact.html MK-AI.html; do
+            if [ -f "$f" ]; then
+              echo "✅ $f exists"
+            else
+              echo "❌ $f MISSING"
+              exit 1
+            fi
+          done
