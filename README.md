@@ -15,22 +15,22 @@
 
 ## About
 
-Personal portfolio website for Mohammed Karim — BSc Computer Science student at Liverpool John Moores University (LJMU). Built from scratch with vanilla HTML, CSS, and JavaScript. Features an AI assistant (MK-AI), animated UI, and a secure Netlify serverless backend.
+Personal portfolio website for Mohammed Karim — BSc Computer Science student at Liverpool John Moores University (LJMU). Built from scratch with vanilla HTML, CSS, and JavaScript. Features an AI assistant (MK-AI), animated UI, and free contact form via Formspree.
 
 ---
 
 ## Features
 
-- **MK-AI Assistant** — AI chat powered by Groq (Llama 4), proxied securely via Netlify Functions
-- **Animated Hero** — Decoder-style typewriter, floating particles, 3D tilt on hover
+- **MK-AI Assistant** — AI chat powered by Groq (Llama 4)
+- **Animated Hero** — Decoder-style typewriter, floating particles, 3D tilt
 - **Dark / Light Theme** — Persistent toggle with smooth transitions
 - **Experience Timeline** — Interactive modals for each role
 - **Skills Dashboard** — Animated progress rings and skill bars
-- **Contact Form** — Submissions delivered to email via Resend API
+- **Contact Form** — Submissions stored via Formspree, delivered to email
 - **Living Core** — Generative canvas animation page
 - **Fully Responsive** — Mobile-first, works across all devices
 - **Accessible** — Skip-to-content, ARIA labels, keyboard navigation
-- **SEO Ready** — Open Graph, Twitter Card, canonical URLs, meta descriptions
+- **SEO Ready** — Open Graph, Twitter Card, canonical URLs, sitemap, robots.txt
 - **CI/CD** — GitHub Actions runs 73 tests on every push
 
 ---
@@ -43,9 +43,8 @@ Personal portfolio website for Mohammed Karim — BSc Computer Science student a
 | Styling | CSS3 (custom properties, animations, grid, flexbox) |
 | Logic | Vanilla JavaScript (ES2021) |
 | AI | Groq API — Llama 4 Maverick |
-| Backend | Netlify Functions (Node.js serverless) |
-| Email | Resend API |
-| Hosting | GitHub Pages |
+| Contact Form | Formspree (free, GitHub Pages compatible) |
+| Hosting | GitHub Pages (free, unlimited) |
 | CI/CD | GitHub Actions |
 | Tooling | ESLint, Prettier, Jest |
 
@@ -55,83 +54,63 @@ Personal portfolio website for Mohammed Karim — BSc Computer Science student a
 
 ```
 mk-portfolio/
-├── index.html                  # Home — hero, skills, experience, projects
-├── about.html                  # About Me — bio, photo, education
-├── contact.html                # Contact — form with email delivery
-├── MK-AI.html                  # AI Chat assistant interface
-├── living-core.html            # Generative canvas animation
+├── index.html                  # Home page
+├── about.html                  # About Me
+├── contact.html                # Contact form (Formspree)
+├── MK-AI.html                  # AI Chat assistant
+├── living-core.html            # Generative animation
 ├── profile-frame.html          # Profile showcase
-├── styles.css                  # Global stylesheet (documented sections)
-├── script.js                   # Shared JS — animations, modals, forms
-├── mk-ai.js                    # MK-AI logic — streaming, history, UI
+├── styles.css                  # Global stylesheet
+├── script.js                   # Main JS logic
+├── mk-ai.js                    # MK-AI assistant logic
 ├── favicon.svg                 # MK brand favicon
-├── mklogo.png                  # MK logo image
+├── mklogo.png                  # Logo
 ├── karim_png.png               # Profile photo
-├── netlify.toml                # Netlify config — redirects, headers
-├── package.json                # Dev tooling — ESLint, Prettier, Jest
-├── .eslintrc.json              # JS linting rules
-├── .prettierrc                 # Code formatting config
-├── .gitignore                  # Excludes secrets and build files
+├── robots.txt                  # Search engine guidance
+├── sitemap.xml                 # Site map for Google
+├── netlify.toml                # Netlify config (kept for future use)
+├── package.json                # Dev tooling
+├── .eslintrc.json              # JS linting
+├── .prettierrc                 # Code formatting
+├── .gitignore                  # Excludes secrets
 ├── README.md                   # This file
 ├── LICENSE                     # MIT License
 ├── CHANGELOG.md                # Version history
-├── SECURITY.md                 # Security practices
-├── .github/
-│   └── workflows/
-│       └── test.yml            # CI/CD — runs tests on every push
-├── netlify/
-│   └── functions/
-│       ├── chat.js             # AI proxy — Groq API (key server-side only)
-│       └── contact.js          # Contact form — email delivery via Resend
+├── SECURITY.md                 # Security policy
+├── CONTRIBUTING.md             # Contribution guide
+├── .github/workflows/
+│   └── test.yml                # CI/CD pipeline
+├── netlify/functions/
+│   ├── chat.js                 # AI proxy (for future backend)
+│   └── contact.js              # Contact handler (for future backend)
 └── tests/
-    ├── README.md               # Test documentation
-    ├── email.test.js           # Email validation tests
-    ├── detectTopic.test.js     # AI topic detection tests
-    ├── formatText.test.js      # Markdown formatter tests
-    ├── contactForm.test.js     # Form validation tests
-    └── netlify-chat.test.js    # Netlify function tests
+    ├── README.md
+    ├── email.test.js
+    ├── detectTopic.test.js
+    ├── formatText.test.js
+    ├── contactForm.test.js
+    └── netlify-chat.test.js
 ```
 
 ---
 
 ## Getting Started
 
-### Prerequisites
-- Node.js 18+
-
-### Run Locally
-
 ```bash
-# 1. Clone the repo
 git clone https://github.com/Mohammedkarim-MK/mk-portfolio.git
 cd mk-portfolio
-
-# 2. Install dev tools
 npm install
-
-# 3. Start local server
 npm run dev
-# Opens at http://localhost:3000
-```
-
-### Run Tests
-
-```bash
-npm test
 ```
 
 ---
 
-## Environment Variables
+## Contact Form Setup (Formspree)
 
-All secrets are stored server-side via Netlify — never in the codebase.
-
-| Variable | Description |
-|---|---|
-| `GROQ_API_KEY` | Groq API key for MK-AI assistant |
-| `RESEND_API_KEY` | Resend API key for contact form emails |
-| `CONTACT_EMAIL` | Your email to receive contact messages |
-| `FROM_EMAIL` | Sender address (use Resend verified domain) |
+1. Go to [formspree.io/new](https://formspree.io/new)
+2. Create a free form → copy your Form ID
+3. Open `script.js` → find `YOUR_FORMSPREE_ID` → replace with your ID
+4. Push to GitHub — contact form is live!
 
 ---
 
@@ -144,5 +123,7 @@ MIT License — see [LICENSE](LICENSE) for details.
 <div align="center">
 
 Made by **Mohammed Karim** · Liverpool, UK · BSc Computer Science, LJMU
+
+[Live Site](https://mohammedkarim-mk.github.io/mk-portfolio/) · [GitHub](https://github.com/Mohammedkarim-MK/mk-portfolio)
 
 </div>
