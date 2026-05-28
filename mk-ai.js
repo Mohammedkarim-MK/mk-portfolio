@@ -336,7 +336,7 @@ CRITICAL: Never say "I'm not sure what you're asking" or "Could you be more spec
 
   // ── Direct Groq API call (browser fallback — no server needed) ───────────────
   async function callGroqDirect(text, priorHistory) {
-    if (!GROQ_KEY) return null;
+    if (!GROQ_KEY && !BACKEND_URL) return null; // Use backend if available even without local key
     try {
       const msgs = [{ role: 'system', content: SYSTEM_PROMPT }];
       priorHistory.forEach(m => {
