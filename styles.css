@@ -1,3 +1,36 @@
+/* =============================================================================
+   MK PORTFOLIO — Main Stylesheet
+   Author:  Mohammed Karim
+   Version: 2.0.0
+   Updated: 2025
+   =============================================================================
+
+   TABLE OF CONTENTS
+   -----------------
+   01. CSS Custom Properties (Variables)
+   02. Reset & Base Styles
+   03. Animations & Keyframes
+   04. Layout & Wrapper
+   05. Navigation & Topbar
+   06. Hero Section
+   07. Stats & Skill Cards
+   08. Dashboard Grid & Cards
+   09. Experience Timeline
+   10. Projects Grid
+   11. About Page
+   12. Contact Page
+   13. MK-AI Chat Interface
+   14. Modal & Overlays
+   15. Footer
+   16. Utility Classes
+   17. Dark Theme (Default)
+   18. Light Theme
+   19. Responsive — Mobile & Tablet
+   ============================================================================= */
+
+/* =============================================================================
+   01. CSS CUSTOM PROPERTIES (VARIABLES)
+   ============================================================================= */
 :root{
   --bg:#050505;
   --bg-deep:#020202;
@@ -26,6 +59,9 @@
   --shadow-neon-hover:0 0 48px rgba(255,42,42,0.88),0 0 96px rgba(255,42,42,0.45),0 0 170px rgba(255,42,42,0.18),0 22px 58px rgba(0,0,0,0.72);
   --glow-text:0 0 10px rgba(255,42,42,0.72),0 0 28px rgba(255,42,42,0.40),0 0 48px rgba(255,42,42,0.18);
 }
+/* =============================================================================
+   02. RESET & BASE STYLES
+   ============================================================================= */
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{min-height:100%;font-family:'DM Sans',system-ui,sans-serif;color:var(--text);-webkit-font-smoothing:antialiased;overflow-x:hidden;background:#000}
 body::selection,*::selection{background:var(--neon);color:#fff}
@@ -33,6 +69,9 @@ body::selection,*::selection{background:var(--neon);color:#fff}
 /* bg-canvas/grid/scan kept in HTML but hidden — fire canvas handles all bg */
 .bg-canvas,.bg-grid,.bg-scan{display:none}
 
+/* =============================================================================
+   03. ANIMATIONS & KEYFRAMES
+   ============================================================================= */
 @keyframes floatUp{0%{transform:translateY(100vh) scale(0);opacity:0}10%{opacity:0.75}90%{opacity:0.20}100%{transform:translateY(-10vh) scale(1.4);opacity:0}}
 @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
 @keyframes neonPulse{0%,100%{box-shadow:0 0 12px rgba(255,42,42,0.50),0 0 26px rgba(255,42,42,0.25),0 0 50px rgba(255,42,42,0.10)}50%{box-shadow:0 0 22px rgba(255,42,42,0.90),0 0 50px rgba(255,42,42,0.55),0 0 90px rgba(255,42,42,0.22)}}
@@ -51,9 +90,15 @@ body::selection,*::selection{background:var(--neon);color:#fff}
 @keyframes glowBorder{0%,100%{border-color:rgba(255,42,42,0.20)}50%{border-color:rgba(255,42,42,0.55)}}
 @keyframes popIn{from{transform:scale(0.84) translateY(18px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
 
+/* =============================================================================
+   04. LAYOUT & WRAPPER
+   ============================================================================= */
 .wrap{position:relative;z-index:1;max-width:1140px;margin:0 auto;padding:28px 22px 64px}
 
 /* TOPBAR */
+/* =============================================================================
+   05. NAVIGATION & TOPBAR
+   ============================================================================= */
 .topbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:34px;padding:14px 20px;background:linear-gradient(180deg,rgba(20,20,20,0.92),rgba(5,5,5,0.92));border:1px solid var(--border);border-radius:18px;backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);box-shadow:var(--shadow-card),0 0 0 1px rgba(255,42,42,0.06);animation:fadeUp 0.7s cubic-bezier(.2,.9,.3,1) both;position:relative;overflow:hidden}
 .topbar::before{content:'';position:absolute;left:0;right:0;top:0;height:1px;background:linear-gradient(90deg,transparent,var(--neon) 40%,var(--neon-bright) 50%,var(--neon) 60%,transparent);opacity:0.85;box-shadow:0 0 20px var(--neon-glow),0 0 40px var(--neon-glow-s)}
 .topbar::after{content:'';position:absolute;left:0;right:0;bottom:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,42,42,0.18),transparent);pointer-events:none}
@@ -110,6 +155,9 @@ body::selection,*::selection{background:var(--neon);color:#fff}
 .hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px);background:var(--neon-bright)}
 
 /* HERO */
+/* =============================================================================
+   06. HERO SECTION
+   ============================================================================= */
 .hero{display:grid;grid-template-columns:1fr 310px;gap:18px;margin-bottom:18px;animation:fadeUp 0.7s 0.1s cubic-bezier(.2,.9,.3,1) both}
 .hero-card{background:linear-gradient(160deg,rgba(20,20,20,0.97),rgba(5,5,5,1));border:1px solid var(--border);border-radius:22px;padding:36px 34px;position:relative;overflow:hidden;box-shadow:var(--shadow-3d);display:flex;align-items:flex-start;gap:32px}
 .hero-content{flex:1;min-width:0}
@@ -157,6 +205,9 @@ body::selection,*::selection{background:var(--neon);color:#fff}
 
 /* STAT CARDS */
 .hero-stats{display:flex;flex-direction:column;gap:12px}
+/* =============================================================================
+   07. STATS & SKILL CARDS
+   ============================================================================= */
 .stat-card{background:linear-gradient(160deg,rgba(20,20,20,0.97),rgba(5,5,5,1));border:1px solid var(--border);border-radius:18px;padding:20px;flex:1;position:relative;overflow:hidden;transition:transform 0.3s cubic-bezier(.2,.9,.3,1),border-color 0.3s,box-shadow 0.3s;cursor:default;box-shadow:var(--shadow-card)}
 .stat-card::before{content:'';position:absolute;left:0;right:0;top:0;height:2px;background:var(--grad);opacity:0.65;transform:scaleX(0.20);transform-origin:left;transition:transform 0.5s cubic-bezier(.2,.9,.3,1);box-shadow:0 0 14px var(--neon-glow),0 0 28px var(--neon-glow-s)}
 .stat-card:hover::before{transform:scaleX(1)}
@@ -347,6 +398,9 @@ body::selection,*::selection{background:var(--neon);color:#fff}
 .modal-bullets li::before{content:'→';color:var(--neon);flex-shrink:0;font-weight:700;text-shadow:0 0 8px var(--neon-glow)}
 
 /* FOOTER */
+/* =============================================================================
+   15. FOOTER
+   ============================================================================= */
 .footer{display:flex;justify-content:space-between;align-items:center;margin-top:36px;padding-top:20px;border-top:1px solid var(--border);color:var(--muted);font-size:12px;position:relative;z-index:1;flex-wrap:wrap;gap:8px}
 .footer::before{content:'';position:absolute;left:50%;transform:translateX(-50%);top:-1px;width:min(60%,480px);height:1px;background:linear-gradient(90deg,transparent,var(--neon),transparent);opacity:0.80;box-shadow:0 0 14px var(--neon-glow),0 0 28px var(--neon-glow-s)}
 
@@ -555,9 +609,15 @@ body::selection,*::selection{background:var(--neon);color:#fff}
 
 /* Tablet */
 @media(max-width:960px){
-  .hero{grid-template-columns:1fr}
+  /* =============================================================================
+   06. HERO SECTION
+   ============================================================================= */
+.hero{grid-template-columns:1fr}
   .hero-stats{flex-direction:row}
-  .stat-card{flex:1}
+  /* =============================================================================
+   07. STATS & SKILL CARDS
+   ============================================================================= */
+.stat-card{flex:1}
   .grid{grid-template-columns:1fr}
   .project-grid{grid-template-columns:repeat(2,1fr)}
   .hero-heading{font-size:38px}
@@ -568,7 +628,10 @@ body::selection,*::selection{background:var(--neon);color:#fff}
 /* Mobile Large */
 @media(max-width:768px){
   .hamburger{display:none}
-  .topbar{position:relative;padding:12px 14px;gap:10px}
+  /* =============================================================================
+   05. NAVIGATION & TOPBAR
+   ============================================================================= */
+.topbar{position:relative;padding:12px 14px;gap:10px}
   .nav{
     display:flex;
     flex-basis:100%;
@@ -591,14 +654,20 @@ body::selection,*::selection{background:var(--neon);color:#fff}
   }
   .nav a.active{background:rgba(255,42,42,0.14);box-shadow:inset 0 0 0 1px rgba(255,42,42,0.45)}
   .status-dot{order:2;font-size:11px;padding:5px 10px}
-  .wrap{padding:18px 14px 48px}
+  /* =============================================================================
+   04. LAYOUT & WRAPPER
+   ============================================================================= */
+.wrap{padding:18px 14px 48px}
   .hero-heading{font-size:34px;letter-spacing:-1px}
   .hero-card{padding:24px 20px;flex-direction:column-reverse;align-items:center}
   .hero-photo-col{margin-bottom:8px}
   .hero-photo-3d{width:130px;height:156px;transform:none}
   .hero-photo-badge{font-size:10px}
   .hero-bio{font-size:14px}
-  .stat-card{padding:14px}
+  /* =============================================================================
+   07. STATS & SKILL CARDS
+   ============================================================================= */
+.stat-card{padding:14px}
   .stat-num{font-size:26px}
   .project-grid{grid-template-columns:repeat(2,1fr)}
   .lang-grid{grid-template-columns:repeat(3,1fr);gap:10px}
@@ -633,7 +702,10 @@ body::selection,*::selection{background:var(--neon);color:#fff}
   .brand-text .bname{font-size:15px}
   .brand-text .brole{display:none}
   .status-dot{display:none}
-  .wrap{padding:14px 12px 36px}
+  /* =============================================================================
+   04. LAYOUT & WRAPPER
+   ============================================================================= */
+.wrap{padding:14px 12px 36px}
   .lang-grid{grid-template-columns:repeat(2,1fr)}
   .nav a{font-size:12px;padding:9px 4px}
 }
@@ -1095,7 +1167,10 @@ html[data-theme="light"] #fireCanvas{opacity:0.65}
 html[data-theme="light"] #glassGrid{opacity:1}
 
 /* ════ TOPBAR — frosted glass ════ */
-html[data-theme="light"] .topbar{
+html[data-theme="light"] /* =============================================================================
+   05. NAVIGATION & TOPBAR
+   ============================================================================= */
+.topbar{
   background:rgba(255,255,255,0.78);
   backdrop-filter:blur(24px) saturate(1.8);
   -webkit-backdrop-filter:blur(24px) saturate(1.8);
@@ -1354,7 +1429,10 @@ html[data-theme="light"] .modal-close:hover{
 }
 
 /* ════ FOOTER ════ */
-html[data-theme="light"] .footer{color:#666;border-color:rgba(0,0,0,0.08)}
+html[data-theme="light"] /* =============================================================================
+   15. FOOTER
+   ============================================================================= */
+.footer{color:#666;border-color:rgba(0,0,0,0.08)}
 
 /* ════ COOKIE BANNER ════ */
 html[data-theme="light"] #cookieBanner{
