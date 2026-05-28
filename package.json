@@ -1,0 +1,39 @@
+{
+  "name": "mk-portfolio",
+  "version": "2.0.0",
+  "description": "Mohammed Karim personal portfolio — Data Analyst, Web Developer, Content Creator",
+  "author": "Mohammed Karim <mohammedkarim@outlook.com>",
+  "license": "MIT",
+  "homepage": "https://mohammedkarim-mk.github.io/mk-portfolio",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Mohammedkarim-MK/mk-portfolio.git"
+  },
+  "scripts": {
+    "lint": "eslint assets/js/*.js --fix",
+    "format": "prettier --write \"**/*.{html,css,js,json,md}\"",
+    "validate": "html-validate index.html about.html contact.html MK-AI.html",
+    "dev": "live-server --port=3000 --open=index.html",
+    "start": "live-server --port=3000",
+    "build": "echo 'Static site — no build step required'",
+    "precommit": "npm run lint && npm run format"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.5",
+    "live-server": "^1.2.2",
+    "html-validate": "^8.18.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "portfolio",
+    "data-analyst",
+    "web-developer",
+    "javascript",
+    "ai",
+    "groq",
+    "netlify"
+  ]
+}
