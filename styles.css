@@ -224,13 +224,13 @@ body::selection,*::selection{background:var(--neon);color:#fff}
 .col-left,.col-right{display:flex;flex-direction:column;gap:16px}
 
 /* CARDS */
-.card{background:linear-gradient(160deg,rgba(20,20,20,0.96),rgba(5,5,5,0.99));border:1px solid var(--border);border-radius:20px;padding:22px;position:relative;overflow:hidden;opacity:0;transform:translateY(26px);transition:opacity 0.6s ease,transform 0.6s cubic-bezier(.2,.9,.3,1),border-color 0.3s,box-shadow 0.35s;box-shadow:var(--shadow-card)}
+.card{background:linear-gradient(160deg,rgba(20,20,20,0.96),rgba(5,5,5,0.99));border:1px solid var(--border);border-radius:20px;padding:22px;position:relative;overflow:hidden;opacity:0;transform:translateY(26px);transition:opacity 0.6s ease,transform 0.6s cubic-bezier(.2,.9,.3,1),border-color 0.3s,box-shadow 0.35s;box-shadow:var(--shadow-card);animation:cardFallback 0.6s 2.5s forwards}
 .card::before{content:'';position:absolute;left:-1px;right:-1px;top:-1px;height:1px;background:linear-gradient(90deg,transparent,var(--neon) 40%,var(--neon-bright) 50%,var(--neon) 60%,transparent);opacity:0.75;box-shadow:0 0 14px var(--neon-glow),0 0 30px var(--neon-glow-s);pointer-events:none}
-.card.visible{opacity:1;transform:translateY(0)}
-.card.slide-left{transform:translateX(-26px)}
-.card.slide-left.visible{transform:translateX(0)}
-.card.slide-right{transform:translateX(26px)}
-.card.slide-right.visible{transform:translateX(0)}
+.card.visible{opacity:1;transform:translateY(0);animation:none}@keyframes cardFallback{to{opacity:1;transform:translateY(0)}}
+.card.slide-left{transform:translateX(-26px);animation:cardFallbackLeft 0.6s 2.5s forwards}@keyframes cardFallbackLeft{to{opacity:1;transform:translateX(0)}}
+.card.slide-left.visible{transform:translateX(0);animation:none}
+.card.slide-right{transform:translateX(26px);animation:cardFallbackRight 0.6s 2.5s forwards}@keyframes cardFallbackRight{to{opacity:1;transform:translateX(0)}}
+.card.slide-right.visible{transform:translateX(0);animation:none}
 .card:hover{border-color:rgba(255,42,42,0.32);box-shadow:0 1px 0 rgba(255,255,255,0.07) inset,0 20px 50px rgba(0,0,0,0.72),0 0 38px rgba(255,42,42,0.18),0 0 80px rgba(255,42,42,0.06)}
 .card-glow{position:absolute;top:-50px;right:-50px;width:190px;height:190px;border-radius:50%;background:radial-gradient(circle,rgba(255,42,42,0.16),transparent 70%);pointer-events:none}
 
