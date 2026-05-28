@@ -20,6 +20,14 @@
   <script>if(localStorage.getItem('mk_theme')==='light')document.documentElement.setAttribute('data-theme','light');</script>
 </head>
 <body>
+  <!-- Netlify Forms detection — required for JS-submitted forms -->
+  <form name="contact" netlify netlify-honeypot="bot-field" hidden>
+    <input type="text"  name="name"/>
+    <input type="email" name="email"/>
+    <input type="text"  name="subject"/>
+    <textarea           name="message"></textarea>
+  </form>
+
   <div class="bg-canvas">
     <div class="orb orb1"></div>
     <div class="orb orb2"></div>
@@ -92,7 +100,9 @@
           <div class="card-title">Send a Message</div>
 
           <!-- FORM STATE -->
-          <form class="contact-form" id="contactForm" novalidate>
+          <form class="contact-form" id="contactForm" name="contact" netlify netlify-honeypot="bot-field" novalidate>
+            <input type="hidden" name="form-name" value="contact"/>
+            <p hidden><input name="bot-field"/></p>
             <div class="form-row">
               <div class="field">
                 <label for="nameInput">Your Name</label>
