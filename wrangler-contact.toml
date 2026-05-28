@@ -1,0 +1,13 @@
+# =============================================================================
+# wrangler-contact.toml — Cloudflare Contact Worker Config
+# Deploy: wrangler deploy --config wrangler-contact.toml
+# =============================================================================
+# Secrets (set via CLI — never in this file):
+# wrangler secret put RESEND_API_KEY
+# wrangler secret put CONTACT_EMAIL
+# wrangler secret put FROM_EMAIL
+# =============================================================================
+
+name          = "mk-contact"
+main          = "workers/contact.js"
+compatibility_date = "2024-01-01"
