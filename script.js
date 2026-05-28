@@ -73,20 +73,39 @@
       });
       observer.unobserve(e.target);
     });
-  }, { threshold: 0.06 });
+  }, { threshold: 0.01, rootMargin: '0px 0px -20px 0px' });
 
   cards.forEach((card, i) => {
     card.style.transitionDelay = `${i * 0.045}s`;
     observer.observe(card);
   });
+
+  // Fallback: force all cards visible after 1.5s if observer hasn't fired
+  setTimeout(() => {
+    cards.forEach(card => {
+      if (!card.classList.contains('visible')) {
+        card.classList.add('visible');
+        card.querySelectorAll('.skill-fill').forEach(el => {
+          el.style.transform = `scaleX(${el.dataset.w})`;
+        });
+        card.querySelectorAll('.ring-val').forEach(el => {
+          const pct = parseInt(el.dataset.pct);
+          const circ = 2 * Math.PI * 28;
+          el.style.strokeDashoffset = circ - (pct / 100) * circ;
+        });
+      }
+    });
+  }, 1500);
 })();
 
 // ----- Stat bars + counting numbers on load ---------------------------------
-window.addEventListener('load', () => {
+function runCounters() {
   document.querySelectorAll('.stat-fill').forEach(el => {
-    setTimeout(() => { el.style.transform = `scaleX(${el.dataset.w})`; }, 500);
+    setTimeout(() => { el.style.transform = `scaleX(${el.dataset.w})`; }, 300);
   });
   document.querySelectorAll('[data-count]').forEach(el => {
+    if (el.dataset.animated) return;
+    el.dataset.animated = '1';
     const target = parseInt(el.dataset.count);
     const suffix = el.dataset.suffix || '';
     let cur = 0;
@@ -96,7 +115,10 @@ window.addEventListener('load', () => {
       if (cur >= target) clearInterval(t);
     }, 28);
   });
-});
+}
+// Run on both DOMContentLoaded and load for reliability
+document.addEventListener('DOMContentLoaded', runCounters);
+window.addEventListener('load', runCounters);
 
 // ----- Subtle 3D tilt on hero cards -----------------------------------------
 (function tilt(){
