@@ -217,15 +217,31 @@ function closeModal() {
     submitBtn.textContent = 'Sending…';
     formStatus.textContent = '';
 
+    // EmailJS credentials
+    const EMAILJS_SERVICE_ID  = 'MK-INSIGHT';
+    const EMAILJS_TEMPLATE_ID = 'template_wqkmskk';
+    const EMAILJS_PUBLIC_KEY  = 'IpZuyAIDs-Ctsw9mc';
+
     try {
-      const res  = await fetch('https://mk-contact.mohammed-kareem7707.workers.dev', {
+      const res = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify(payload),
+        body: JSON.stringify({
+          service_id:  EMAILJS_SERVICE_ID,
+          template_id: EMAILJS_TEMPLATE_ID,
+          user_id:     EMAILJS_PUBLIC_KEY,
+          template_params: {
+            from_name: payload.name,
+            reply_to:  payload.email,
+            subject:   payload.subject || 'No subject',
+            message:   payload.message,
+            name:      payload.name,
+            time:      new Date().toLocaleString('en-GB', { timeZone: 'Europe/London' }),
+          },
+        }),
       });
-      const json = await res.json();
 
-      if (res.ok && json.success){
+      if (res.ok){
         // Show verification pending panel
         form.style.display          = 'none';
         verifyPanel.style.display   = 'block';
@@ -273,7 +289,7 @@ function closeModal() {
       resendStatus.style.color = 'var(--muted)';
 
       try {
-        const res  = await fetch('https://mk-contact.mohammed-kareem7707.workers.dev', {
+        const res  = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
           method:  'POST',
           headers: { 'Content-Type': 'application/json' },
           body:    JSON.stringify(lastPayload),
