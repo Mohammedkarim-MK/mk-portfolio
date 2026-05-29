@@ -1,10 +1,10 @@
 {
   "name": "mk-portfolio",
-  "version": "2.0.0",
-  "description": "Mohammed Karim personal portfolio — Data Analyst, Web Developer, Content Creator",
+  "version": "3.0.0",
+  "description": "Mohammed Karim personal portfolio \u2014 Data Analyst, Web Developer, Content Creator. Live at mkinsight.pages.dev",
   "author": "Mohammed Karim <mohammedkarim@outlook.com>",
   "license": "MIT",
-  "homepage": "https://mohammedkarim-mk.github.io/mk-portfolio",
+  "homepage": "https://mkinsight.pages.dev",
   "repository": {
     "type": "git",
     "url": "https://github.com/Mohammedkarim-MK/mk-portfolio.git"
@@ -15,7 +15,7 @@
     "validate": "html-validate index.html about.html contact.html MK-AI.html",
     "dev": "live-server --port=3000 --open=index.html",
     "start": "live-server --port=3000",
-    "build": "echo 'Static site — no build step required'",
+    "build": "echo 'Static site \u2014 no build step required'",
     "precommit": "npm run lint && npm run format",
     "test": "jest",
     "test:watch": "jest --watch",
