@@ -4,6 +4,37 @@ All notable changes to MK Portfolio are documented here.
 
 ---
 
+## [3.0.0] — 2026-05-29
+
+### Added
+- ✅ Cloudflare Pages deployment — mkinsight.pages.dev
+- ✅ Cloudflare Workers for MK-AI backend (mk-ai-chat.mohammed-kareem7707.workers.dev)
+- ✅ EmailJS contact form — sends directly to mk.insight@outlook.com
+- ✅ Custom 404 branded error page
+- ✅ robots.txt and sitemap.xml for SEO
+- ✅ CONTRIBUTING.md for open source best practices
+- ✅ Premium 3D theme toggle and send button styles
+- ✅ White theme comprehensive fixes
+- ✅ Chat container responsive sizing fixed
+
+### Changed
+- ✅ Migrated from Netlify to Cloudflare Pages (free, unlimited)
+- ✅ Contact form switched from Resend to EmailJS (UK-compatible)
+- ✅ All canonical URLs updated to mkinsight.pages.dev
+- ✅ Footer year updated to 2026
+- ✅ Cache version bumped to v6
+
+### Removed
+- ✅ netlify/functions/ folder (replaced by Cloudflare Workers)
+- ✅ netlify.toml (no longer needed)
+
+### Security
+- ✅ All API keys stored in Cloudflare Worker secrets
+- ✅ EmailJS public key only — no private keys in codebase
+- ✅ No secrets exposed in any file
+
+---
+
 ## [2.0.0] — 2025
 
 ### Added
