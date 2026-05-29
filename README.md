@@ -43,7 +43,7 @@ Personal portfolio website for Mohammed Karim — BSc Computer Science student a
 | Styling | CSS3 (custom properties, animations, grid, flexbox) |
 | Logic | Vanilla JavaScript (ES2021) |
 | AI | Groq API — Llama 4 Maverick |
-| Contact Form | Formspree (free, GitHub Pages compatible) |
+| Contact Form | EmailJS (sends to mk.insight@outlook.com) (free, GitHub Pages compatible) |
 | Hosting | GitHub Pages (free, unlimited) |
 | CI/CD | GitHub Actions |
 | Tooling | ESLint, Prettier, Jest |
