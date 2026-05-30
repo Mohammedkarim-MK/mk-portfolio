@@ -1,18 +1,6 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta name="description" content="Get in touch with Mohammed Karim — available for freelance web development and data analysis."/>
-  <meta name="author" content="Mohammed Karim"/>
-  <link rel="canonical" href="https://mkinsight.pages.dev/contact.html"/>
-  <meta property="og:title" content="Contact Mohammed Karim"/>
-  <meta property="og:description" content="Get in touch with Mohammed Karim — available for freelance web development and data analysis."/>
-  <meta property="og:type" content="website"/>
-  <meta property="og:url" content="https://mkinsight.pages.dev/contact.html"/>
-  <meta property="og:image" content="https://mkinsight.pages.dev/karim_png.png"/>
-  <meta name="twitter:card" content="summary_large_image"/>
-  <meta name="twitter:title" content="Contact Mohammed Karim"/>
-  <link rel="icon" type="image/svg+xml" href="favicon.svg"/>
-  <link rel="shortcut icon" href="favicon.svg"/>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Contact — Mohammed Karim</title>
@@ -20,7 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@700&family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="styles.css?v=7"/>
   <script>if(localStorage.getItem('mk_theme')==='light')document.documentElement.setAttribute('data-theme','light');</script>
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 <body>
   <div class="bg-canvas">
@@ -123,7 +111,7 @@
             </div>
           </form>
 
-          <!-- SUCCESS STATE (hidden until sent) -->
+          <!-- SUCCESS STATE (shown after message sent) -->
           <div class="verify-pending success-panel" id="verifyPending" style="display:none" aria-live="polite">
             <div class="success-ring" id="successRing">
               <svg class="success-svg" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -139,10 +127,10 @@
               </svg>
               <div class="success-particles" id="successParticles"></div>
             </div>
-            <h3 class="vp-title success-title">Message Sent!</h3>
-            <p class="vp-body success-body">Your message has been delivered to<br/><strong id="verifyEmailDisplay">Mohammed Karim</strong></p>
+            <h3 class="success-title">Message Sent!</h3>
+            <p class="success-body">Your message has been delivered to<br/><strong id="verifyEmailDisplay">Mohammed Karim</strong></p>
             <p class="success-sub">Usually responds within 24 hours ⚡</p>
-            <div class="vp-actions success-actions">
+            <div class="success-actions">
               <button id="backToFormBtn" class="btn-primary" type="button">✦ Send Another</button>
               <a class="btn-secondary" href="index.html">← Back to Home</a>
             </div>
@@ -195,7 +183,7 @@
     </section>
 
     <footer class="footer">
-      <div>© 2026 Mohammed Karim · Liverpool, UK</div>
+      <div>© 2025 Mohammed Karim · Liverpool, UK</div>
       <div>BSc Computer Science · LJMU · Data Analyst · Developer</div>
     </footer>
   </div>
