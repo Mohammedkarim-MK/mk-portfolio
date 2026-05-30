@@ -315,12 +315,17 @@ function closeModal() {
   // Back to form button
   if (backBtn){
     backBtn.addEventListener('click', () => {
-      verifyPanel.style.display = 'none';
-      form.style.display        = '';
-      submitBtn.disabled        = false;
-      submitBtn.textContent     = 'Send Message ↗';
-      formStatus.textContent    = '';
-    });
+    verifyPanel.style.display = 'none';
+    form.style.display        = 'block';
+    form.reset();
+    submitBtn.disabled    = false;
+    submitBtn.textContent = 'Send Message ↗';
+    formStatus.textContent = '';
+    const ring = document.getElementById('successRing');
+    if (ring) ring.classList.remove('animate');
+    const parts = document.getElementById('successParticles');
+    if (parts) parts.innerHTML = '';
+  });
   }
 
   // Copy email button
