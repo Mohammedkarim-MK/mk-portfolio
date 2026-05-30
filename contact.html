@@ -18,7 +18,7 @@
   <title>Contact — Mohammed Karim</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@700&family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="styles.css?v=6"/>
+  <link rel="stylesheet" href="styles.css?v=7"/>
   <script>if(localStorage.getItem('mk_theme')==='light')document.documentElement.setAttribute('data-theme','light');</script>
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
@@ -123,18 +123,29 @@
             </div>
           </form>
 
-          <!-- VERIFY PENDING STATE (hidden until sent) -->
-          <div class="verify-pending" id="verifyPending" style="display:none" aria-live="polite">
-            <div class="vp-icon">✉</div>
-            <h3 class="vp-title">Check your inbox!</h3>
-            <p class="vp-body">We sent a verification link to<br/><strong id="verifyEmailDisplay"></strong></p>
-            <p class="vp-note">Click the link in that email to deliver your message. The link expires in <strong>1 hour</strong>.</p>
-            <p class="vp-tip">Don't see it? Check your spam or junk folder.</p>
-            <div class="vp-actions">
-              <button id="resendBtn" class="btn-secondary" type="button">Resend Email</button>
-              <button id="backToFormBtn" class="btn-secondary" type="button">← Edit Message</button>
+          <!-- SUCCESS STATE (hidden until sent) -->
+          <div class="verify-pending success-panel" id="verifyPending" style="display:none" aria-live="polite">
+            <div class="success-ring" id="successRing">
+              <svg class="success-svg" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle class="success-circle-bg" cx="40" cy="40" r="36" stroke="rgba(255,42,42,0.15)" stroke-width="3"/>
+                <circle class="success-circle" cx="40" cy="40" r="36" stroke="url(#successGrad)" stroke-width="3" stroke-linecap="round" stroke-dasharray="226" stroke-dashoffset="226"/>
+                <polyline class="success-check" points="24,41 35,52 56,28" stroke="#ff5252" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="50" stroke-dashoffset="50"/>
+                <defs>
+                  <linearGradient id="successGrad" x1="0" y1="0" x2="80" y2="80" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#ff5252"/>
+                    <stop offset="100%" stop-color="#c40d0d"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div class="success-particles" id="successParticles"></div>
             </div>
-            <span id="resendStatus" class="field-error" style="display:block;text-align:center;margin-top:8px"></span>
+            <h3 class="vp-title success-title">Message Sent!</h3>
+            <p class="vp-body success-body">Your message has been delivered to<br/><strong id="verifyEmailDisplay">Mohammed Karim</strong></p>
+            <p class="success-sub">Usually responds within 24 hours ⚡</p>
+            <div class="vp-actions success-actions">
+              <button id="backToFormBtn" class="btn-primary" type="button">✦ Send Another</button>
+              <a class="btn-secondary" href="index.html">← Back to Home</a>
+            </div>
           </div>
 
         </div>
@@ -189,6 +200,6 @@
     </footer>
   </div>
 
-  <script src="script.js?v=6"></script>
+  <script src="script.js?v=7"></script>
 </body>
 </html>
