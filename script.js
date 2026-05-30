@@ -186,67 +186,61 @@ function closeModal() {
   const verifyEmail  = document.getElementById('verifyEmailDisplay');
   const resendBtn    = document.getElementById('resendBtn');
   const resendStatus = document.getElementById('resendStatus');
-  const backBtn      = document.getElementById('backToFormBtn');
+  const backBtn      = document.getElementBy  if (backBtn) backBtn.addEventListener('click', () => {
+    verifyPanel.style.display = 'none';
+    form.style.display        = 'block';
+    form.reset();
+    submitBtn.disabled    = false;
+    submitBtn.textContent = 'Send Message ↗';
+    formStatus.textContent = '';
+    // Remove animation class for reuse
+    const ring = document.getElementById('successRing');
+    if (ring) ring.classList.remove('animate');
+  });
 
-  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-
-  function isValidEmail(v){ return EMAIL_RE.test(String(v).trim()); }
-
-  function validateEmail(){
-    const val = emailInput.value;
-    if (val && !isValidEmail(val)){
-      emailErr.textContent  = 'Please enter a valid email address.';
-      emailInput.classList.add('input-invalid');
-      submitBtn.disabled = true;
-      return false;
+  // Particle burst function
+  function spawnParticles() {
+    const container = document.getElementById('successParticles');
+    if (!container) return;
+    container.innerHTML = '';
+    const colors = ['#ff5252','#ff8a8a','#ffb3b3','#c40d0d','#ff2a2a'];
+    for (let i = 0; i < 18; i++) {
+      const p = document.createElement('span');
+      p.className = 'particle';
+      const angle  = (i / 18) * 360;
+      const dist   = 55 + Math.random() * 30;
+      const size   = 4 + Math.random() * 6;
+      const color  = colors[Math.floor(Math.random() * colors.length)];
+      const delay  = Math.random() * 0.2;
+      const dur    = 0.6 + Math.random() * 0.4;
+      p.style.cssText = `
+        position:absolute;
+        width:${size}px;height:${size}px;
+        background:${color};
+        border-radius:50%;
+        left:50%;top:50%;
+        transform:translate(-50%,-50%);
+        animation: particle-fly ${dur}s ${delay}s ease-out forwards;
+        --dx:${Math.cos(angle * Math.PI/180) * dist}px;
+        --dy:${Math.sin(angle * Math.PI/180) * dist}px;
+        opacity:0;
+      `;
+      container.appendChild(p);
     }
-    emailErr.textContent = '';
-    emailInput.classList.remove('input-invalid');
-    submitBtn.disabled = false;
-    return true;
   }
 
-  emailInput.addEventListener('input', validateEmail);
-  emailInput.addEventListener('blur',  validateEmail);
-
-  // Store last payload so resend can replay it
-  let lastPayload = null;
-
-  async function submitContact(payload){
-    submitBtn.disabled  = true;
-    submitBtn.textContent = 'Sending…';
-    formStatus.textContent = '';
-
-    // EmailJS credentials
-    const EMAILJS_SERVICE_ID  = 'MK-INSIGHT';
-    const EMAILJS_TEMPLATE_ID = 'template_wqkmskk';
-    const EMAILJS_PUBLIC_KEY  = 'IpZuyAIDs-Ctsw9mc';
-
-    try {
-      const res = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          service_id:  EMAILJS_SERVICE_ID,
-          template_id: EMAILJS_TEMPLATE_ID,
-          user_id:     EMAILJS_PUBLIC_KEY,
-          template_params: {
-            from_name: payload.name,
-            reply_to:  payload.email,
-            subject:   payload.subject || 'No subject',
-            message:   payload.message,
-            name:      payload.name,
-            time:      new Date().toLocaleString('en-GB', { timeZone: 'Europe/London' }),
-          },
-        }),
-      });
-
       if (res.ok){
-        // Show verification pending panel
-        form.style.display          = 'none';
-        verifyPanel.style.display   = 'block';
-        verifyEmail.textContent     = payload.email;
+        // Show success panel with animation
+        form.style.display        = 'none';
+        verifyPanel.style.display = 'block';
+        verifyEmail.textContent   = payload.name || 'Mohammed Karim';
         lastPayload = payload;
+        // Trigger animations after paint
+        requestAnimationFrame(() => {
+          const ring = document.getElementById('successRing');
+          if (ring) ring.classList.add('animate');
+          spawnParticles();
+        });
       } else {
         formStatus.textContent = '✗ ' + (json.error || 'Failed to send. Please try again.');
         formStatus.style.color = 'var(--neon)';
