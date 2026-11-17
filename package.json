@@ -10,7 +10,8 @@
     "url": "https://github.com/Mohammedkarim-MK/mk-portfolio.git"
   },
   "scripts": {
-    "lint": "eslint assets/js/*.js --fix",
+    "lint": "eslint script.js mk-ai.js",
+    "lint:fix": "eslint script.js mk-ai.js --fix",
     "format": "prettier --write \"**/*.{html,css,js,json,md}\"",
     "validate": "html-validate index.html about.html contact.html MK-AI.html",
     "dev": "live-server --port=3000 --open=index.html",
@@ -38,7 +39,7 @@
     "javascript",
     "ai",
     "groq",
-    "netlify"
+    "cloudflare"
   ],
   "jest": {
     "testEnvironment": "node",
@@ -46,8 +47,7 @@
       "**/tests/**/*.test.js"
     ],
     "collectCoverageFrom": [
-      "*.js",
-      "netlify/functions/*.js"
+      "*.js"
     ],
     "coveragePathIgnorePatterns": [
       "/node_modules/"

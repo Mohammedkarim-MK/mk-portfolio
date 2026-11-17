@@ -68,7 +68,8 @@ jobs:
         run: npm install
 
       - name: 🔍 Run ESLint
-        run: npx eslint assets/js/*.js --max-warnings=20 || true
+        continue-on-error: true
+        run: npx eslint script.js mk-ai.js
 
   html-check:
     name: Validate HTML Files

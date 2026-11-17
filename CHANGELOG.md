@@ -4,6 +4,24 @@ All notable changes to MK Portfolio are documented here.
 
 ---
 
+## [3.0.1] — 2026-11-17
+
+Bug-fix release.
+
+### Fixed
+- Removed the stale `tests/netlify-chat.test.js` suite, which required a Netlify function that no longer exists and failed `npm test` and CI
+- Jest coverage no longer looks at the removed `netlify/functions/` folder
+- Contact Worker (`workers/contact.js`) now escapes user input in the notification email HTML, URL-encodes mailto links, rejects non-string fields, enforces field length limits and uses a stricter email check
+- `npm run lint` and the CI lint step now target `script.js` and `mk-ai.js` instead of the non-existent `assets/js/` folder. The CI lint step reports issues without failing the build (`continue-on-error`)
+- `.eslintrc.json` no longer ignores the stale `netlify/functions/` path
+- `sitemap.xml` now lists the extensionless URLs Cloudflare Pages serves (`/about`, `/MK-AI`, `/contact`, `/living-core`)
+- README updated with the correct live URL (mkinsight.pages.dev), EmailJS contact form, Cloudflare Workers, project structure and test count
+
+### Changed
+- `package.json` keyword `netlify` replaced with `cloudflare`; added a `lint:fix` script
+
+---
+
 ## [3.0.0] — 2026-05-29
 
 ### Added

@@ -20,7 +20,11 @@ function respond(data, status = 200) {
   return new Response(JSON.stringify(data), { status, headers: CORS_HEADERS });
 }
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const EMAIL_RE = /^[^\s@<>"']+@[^\s@<>"']+\.[^\s@<>"']{2,}$/;
+
+const MAX_LEN = { name: 100, email: 254, subject: 200, message: 5000 };
+
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 export default {
   async fetch(request, env) {
@@ -43,12 +47,21 @@ export default {
 
     const { name, email, subject, message } = body;
 
+    if ([name, email, subject, message].some(v => v != null && typeof v !== 'string')) {
+      return respond({ error: 'Invalid field type' }, 400);
+    }
+
     if (!name?.trim())    return respond({ error: 'Name is required' },    400);
     if (!email?.trim())   return respond({ error: 'Email is required' },   400);
     if (!message?.trim()) return respond({ error: 'Message is required' }, 400);
 
     if (!EMAIL_RE.test(email.trim())) {
       return respond({ error: 'Invalid email address' }, 400);
+    }
+
+    if (name.trim().length > MAX_LEN.name || email.trim().length > MAX_LEN.email ||
+        (subject || '').length > MAX_LEN.subject || message.length > MAX_LEN.message) {
+      return respond({ error: 'One or more fields are too long' }, 400);
     }
 
     const RESEND_API_KEY = env.RESEND_API_KEY;
@@ -58,6 +71,12 @@ export default {
     if (!RESEND_API_KEY) {
       return respond({ error: 'Email service not configured' }, 500);
     }
+
+    const sName    = esc(name.trim());
+    const sEmail   = esc(email.trim());
+    const sSubject = esc(subject || '');
+    const sMessage = esc(message);
+    const mailto   = encodeURIComponent(email.trim());
 
     const html = `
       <div style="font-family:sans-serif;max-width:600px;margin:0 auto;background:#0e0e0e;color:#fbfbfb;border-radius:12px;overflow:hidden;">
@@ -69,24 +88,24 @@ export default {
           <table style="width:100%;border-collapse:collapse;">
             <tr>
               <td style="padding:8px 0;color:#999;font-size:13px;width:80px;">From</td>
-              <td style="padding:8px 0;color:#fbfbfb;font-size:15px;font-weight:600;">${name}</td>
+              <td style="padding:8px 0;color:#fbfbfb;font-size:15px;font-weight:600;">${sName}</td>
             </tr>
             <tr>
               <td style="padding:8px 0;color:#999;font-size:13px;">Email</td>
-              <td style="padding:8px 0;"><a href="mailto:${email}" style="color:#ff5252;">${email}</a></td>
+              <td style="padding:8px 0;"><a href="mailto:${mailto}" style="color:#ff5252;">${sEmail}</a></td>
             </tr>
             <tr>
               <td style="padding:8px 0;color:#999;font-size:13px;">Subject</td>
-              <td style="padding:8px 0;color:#fbfbfb;">${subject || '(no subject)'}</td>
+              <td style="padding:8px 0;color:#fbfbfb;">${sSubject || '(no subject)'}</td>
             </tr>
           </table>
           <hr style="border:none;border-top:1px solid #222;margin:20px 0;"/>
           <h3 style="color:#ff5252;margin:0 0 12px;font-size:14px;text-transform:uppercase;letter-spacing:1px;">Message</h3>
-          <div style="background:#141414;border-left:3px solid #ff2a2a;padding:16px 20px;border-radius:6px;color:#fbfbfb;line-height:1.7;white-space:pre-wrap;">${message}</div>
+          <div style="background:#141414;border-left:3px solid #ff2a2a;padding:16px 20px;border-radius:6px;color:#fbfbfb;line-height:1.7;white-space:pre-wrap;">${sMessage}</div>
           <div style="margin-top:24px;">
-            <a href="mailto:${email}?subject=Re: ${subject || 'Your message'}"
+            <a href="mailto:${mailto}?subject=${encodeURIComponent('Re: ' + (subject || 'Your message'))}"
                style="display:inline-block;background:#ff2a2a;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px;">
-              ↩ Reply to ${name}
+              ↩ Reply to ${sName}
             </a>
           </div>
         </div>
@@ -105,7 +124,7 @@ export default {
         body: JSON.stringify({
           from:     FROM_EMAIL,
           to:       [TO_EMAIL],
-          reply_to: email,
+          reply_to: email.trim(),
           subject:  `📬 Portfolio Contact: ${subject || 'New message'} — from ${name}`,
           html,
         }),

@@ -2,12 +2,19 @@
 // Shared script for index.html + contact.html
 // =============================================================================
 
+// Safe storage helpers: localStorage can throw when site data is blocked.
+function safeGet(k){ try { return localStorage.getItem(k); } catch(e){ return null; } }
+function safeSet(k,v){ try { localStorage.setItem(k,v); } catch(e){ /* storage blocked */ } }
+
+const REDUCED_MOTION = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 
 // ----- Decoder-style typewriter on the role/name line -----------------------
 (function decoder(){
   const target = document.getElementById('nameType');
   if (!target) return;
   const text = target.dataset.text || 'Mohammed Karim — Data Analyst · Developer';
+  if (REDUCED_MOTION) { target.textContent = text; return; }
   const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%&!@<>/_=+0123456789';
   let revealed = 0;
   function tick() {
@@ -119,36 +126,34 @@ window.addEventListener('load', () => {
   const nav = document.getElementById('mainNav');
   if (!btn || !nav) return;
 
+  const close = () => {
+    btn.classList.remove('open');
+    nav.classList.remove('open');
+    btn.setAttribute('aria-expanded', 'false');
+  };
+
   btn.addEventListener('click', e => {
     e.stopPropagation();
     const open = btn.classList.toggle('open');
     nav.classList.toggle('open', open);
-    btn.setAttribute('aria-expanded', open);
+    btn.setAttribute('aria-expanded', String(open));
   });
 
   nav.querySelectorAll('a').forEach(a => {
-    a.addEventListener('click', () => {
-      btn.classList.remove('open');
-      nav.classList.remove('open');
-    });
+    a.addEventListener('click', close);
   });
 
   document.addEventListener('click', e => {
-    if (!nav.contains(e.target) && !btn.contains(e.target)) {
-      btn.classList.remove('open');
-      nav.classList.remove('open');
-    }
+    if (!nav.contains(e.target) && !btn.contains(e.target)) close();
   });
 
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') {
-      btn.classList.remove('open');
-      nav.classList.remove('open');
-    }
+    if (e.key === 'Escape') close();
   });
 })();
 
 // ----- Experience modal (dashboard only) ------------------------------------
+let lastModalTrigger = null;
 function openModal(data) {
   const modal = document.getElementById('expModal');
   if (!modal) return;
@@ -158,19 +163,34 @@ function openModal(data) {
   document.getElementById('modalTags').innerHTML = data.tags.map(t => `<span class="chip chip-rd">${t}</span>`).join('');
   modal.classList.add('open');
   document.body.style.overflow = 'hidden';
+  lastModalTrigger = document.activeElement;
+  const closeBtn = document.getElementById('modalClose');
+  if (closeBtn) closeBtn.focus();
 }
 function closeModal() {
   const modal = document.getElementById('expModal');
   if (!modal) return;
   modal.classList.remove('open');
   document.body.style.overflow = '';
+  if (lastModalTrigger && lastModalTrigger.focus) lastModalTrigger.focus();
+  lastModalTrigger = null;
 }
 (function modalEvents(){
   const modal = document.getElementById('expModal');
   if (!modal) return;
   document.getElementById('modalClose').addEventListener('click', closeModal);
   modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+  document.addEventListener('keydown', e => {
+    if (!modal.classList.contains('open')) return;
+    if (e.key === 'Escape') closeModal();
+    // Only one focusable control (close button) — keep focus inside the dialog
+    else if (e.key === 'Tab') { e.preventDefault(); document.getElementById('modalClose').focus(); }
+  });
+  document.querySelectorAll('.exp-item').forEach(el => {
+    el.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); el.click(); }
+    });
+  });
 })();
 
 // ----- Contact form — live validation + email verification flow --------------
@@ -183,14 +203,16 @@ function closeModal() {
   const submitBtn    = document.getElementById('submitBtn');
   const formStatus   = document.getElementById('formStatus');
   const verifyPanel  = document.getElementById('verifyPending');
-  const verifyEmail  = document.getElementById('verifyEmailDisplay');
-  const resendBtn    = document.getElementById('resendBtn');
+  const resendBtn   = document.getElementById('resendBtn');
   const resendStatus = document.getElementById('resendStatus');
   const backBtn      = document.getElementById('backToFormBtn');
 
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
   function isValidEmail(v){ return EMAIL_RE.test(String(v).trim()); }
+
+  // True while a send is in flight — blocks duplicate submits
+  let sending = false;
 
   function validateEmail(){
     const val = emailInput.value;
@@ -202,7 +224,7 @@ function closeModal() {
     }
     emailErr.textContent = '';
     emailInput.classList.remove('input-invalid');
-    submitBtn.disabled = false;
+    submitBtn.disabled = sending;
     return true;
   }
 
@@ -212,35 +234,41 @@ function closeModal() {
   // Store last payload so resend can replay it
   let lastPayload = null;
 
+  // Single EmailJS send used by both the main submit and the resend button
+  function sendEmail(payload){
+    return fetch('https://api.emailjs.com/api/v1.0/email/send', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        service_id:  'MK-INSIGHT',
+        template_id: 'template_wqkmskk',
+        user_id:     'IpZuyAIDs-Ctsw9mc',
+        template_params: {
+          from_name: payload.name,
+          reply_to:  payload.email,
+          subject:   payload.subject || 'No subject',
+          message:   payload.message,
+          name:      payload.name,
+          time:      new Date().toLocaleString('en-GB', {timeZone:'Europe/London'}),
+        },
+      }),
+    });
+  }
+
   async function submitContact(payload){
+    if (sending) return;
+    sending = true;
     submitBtn.disabled  = true;
     submitBtn.textContent = 'Sending…';
     formStatus.textContent = '';
 
     try {
-      const res  = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          service_id:  'MK-INSIGHT',
-          template_id: 'template_wqkmskk',
-          user_id:     'IpZuyAIDs-Ctsw9mc',
-          template_params: {
-            from_name: payload.name,
-            reply_to:  payload.email,
-            subject:   payload.subject || 'No subject',
-            message:   payload.message,
-            name:      payload.name,
-            time:      new Date().toLocaleString('en-GB', {timeZone:'Europe/London'}),
-          },
-        }),
-      });
+      const res  = await sendEmail(payload);
 
       if (res.ok){
         // Show success panel with animation
         form.style.display        = 'none';
-        verifyPanel.style.display = 'block';
-        verifyEmail.textContent   = payload.name || 'Mohammed Karim';
+        verifyPanel.style.display = 'flex';
         lastPayload = payload;
         requestAnimationFrame(() => {
           const ring = document.getElementById('successRing');
@@ -248,14 +276,17 @@ function closeModal() {
           spawnParticles();
         });
       } else {
-        formStatus.textContent = '✗ ' + (json.error || 'Failed to send. Please try again.');
+        const errText = await res.text().catch(() => '');
+        formStatus.textContent = '✗ ' + (errText || 'Failed to send. Please try again.');
         formStatus.style.color = 'var(--neon)';
+        sending = false;
         submitBtn.disabled  = false;
         submitBtn.textContent = 'Send Message ↗';
       }
     } catch {
       formStatus.textContent = '✗ Network error — email me directly: mk.insight@outlook.com';
       formStatus.style.color = 'var(--neon)';
+      sending = false;
       submitBtn.disabled  = false;
       submitBtn.textContent = 'Send Message ↗';
     }
@@ -263,6 +294,7 @@ function closeModal() {
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
+    if (sending) return;
     if (!validateEmail()) return;
 
     const fd = new FormData(form);
@@ -289,17 +321,13 @@ function closeModal() {
       resendStatus.style.color = 'var(--muted)';
 
       try {
-        const res  = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
-          method:  'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body:    JSON.stringify(lastPayload),
-        });
-        const json = await res.json();
-        if (res.ok && json.success){
+        const res  = await sendEmail(lastPayload);
+        const text = await res.text().catch(() => '');
+        if (res.ok){
           resendStatus.textContent = '✓ Email resent! Check your inbox.';
           resendStatus.style.color = 'var(--neon-bright)';
         } else {
-          resendStatus.textContent = json.error || 'Could not resend. Try again later.';
+          resendStatus.textContent = text || 'Could not resend. Try again later.';
           resendStatus.style.color = 'var(--neon)';
         }
       } catch {
@@ -316,8 +344,9 @@ function closeModal() {
   if (backBtn){
     backBtn.addEventListener('click', () => {
     verifyPanel.style.display = 'none';
-    form.style.display        = 'block';
+    form.style.display        = '';
     form.reset();
+    sending = false;
     submitBtn.disabled    = false;
     submitBtn.textContent = 'Send Message ↗';
     formStatus.textContent = '';
@@ -348,6 +377,7 @@ function closeModal() {
 (function photo3dTilt(){
   const el = document.getElementById('aboutPhoto3d');
   if (!el) return;
+  if (REDUCED_MOTION) return;
 
   const scene    = el.closest('.about-photo-scene');
   const glow     = scene && scene.querySelector('.photo-depth-glow');
@@ -402,7 +432,7 @@ function closeModal() {
 
   el.addEventListener('mouseenter', () => {
     hovering = true;
-    el.style.animation = 'neonRing 1.4s ease-in-out infinite';
+    el.style.animation = 'photoScanIn 2.2s 0.4s cubic-bezier(.2,.9,.3,1) backwards, none, neonRing 1.4s ease-in-out infinite';
     if (!raf) raf = requestAnimationFrame(tick);
   });
 
@@ -424,7 +454,7 @@ function closeModal() {
 
 // ----- Ember & smoke background — dark fire particle aesthetic -----------------
 (function fireBackground(){
-  if (document.getElementById('fireCanvas')) return;
+  if (document.getElementById('fireCanvas') || document.getElementById('lcCanvas')) return;
 
   const canvas = document.createElement('canvas');
   canvas.id = 'fireCanvas';
@@ -766,14 +796,30 @@ function closeModal() {
     // Layer 4 — Top fade mask so UI text stays readable
     drawTopMask();
 
-    requestAnimationFrame(frame);
+    if (!REDUCED_MOTION) requestAnimationFrame(frame);
   }
 
   resize();
   makeClouds();
   makeNodes();
   frame();
-  window.addEventListener('resize', () => { resize(); makeClouds(); makeNodes(); });
+  // Mobile URL-bar show/hide fires resize on scroll: always resize the buffer,
+  // but only re-randomise clouds/nodes on a width change or large height change.
+  let lastW = innerWidth, lastH = innerHeight, rzT;
+  window.addEventListener('resize', () => {
+    clearTimeout(rzT);
+    rzT = setTimeout(() => {
+      const regen = innerWidth !== lastW || Math.abs(innerHeight - lastH) > 150;
+      resize();
+      if (regen) { makeClouds(); makeNodes(); lastW = innerWidth; lastH = innerHeight; }
+      if (REDUCED_MOTION) frame();
+    }, 150);
+  });
+  // Reduced motion draws a single static frame — redraw it when the theme changes
+  if (REDUCED_MOTION) {
+    new MutationObserver(() => frame())
+      .observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  }
 })();
 
 
@@ -792,7 +838,7 @@ function closeModal() {
     }
   }
 
-  applyTheme(localStorage.getItem(STORAGE_KEY) || 'dark');
+  applyTheme(safeGet(STORAGE_KEY) || 'dark');
 
   document.addEventListener('DOMContentLoaded', function(){
     const btn = document.getElementById('themeToggle');
@@ -800,7 +846,7 @@ function closeModal() {
     btn.addEventListener('click', function(){
       const isLight = html.getAttribute('data-theme') === 'light';
       const next = isLight ? 'dark' : 'light';
-      localStorage.setItem(STORAGE_KEY, next);
+      safeSet(STORAGE_KEY, next);
       applyTheme(next);
     });
   });
@@ -811,7 +857,7 @@ function closeModal() {
 // =============================================================================
 (function cookieConsent(){
   const STORAGE_KEY = 'mk_cookie_consent';
-  if (localStorage.getItem(STORAGE_KEY)) return;   // already decided
+  if (safeGet(STORAGE_KEY)) return;   // already decided
 
   // Inject HTML
   const banner = document.createElement('div');
@@ -837,7 +883,7 @@ function closeModal() {
   });
 
   function dismiss(accepted){
-    localStorage.setItem(STORAGE_KEY, accepted ? 'accepted' : 'rejected');
+    safeSet(STORAGE_KEY, accepted ? 'accepted' : 'rejected');
     banner.classList.add('cookie-out');
     banner.addEventListener('transitionend', () => banner.remove(), { once: true });
   }
@@ -969,9 +1015,9 @@ function closeModal() {
   const TILT_SCALE = 1.03;
 
   const TILT_SELECTORS = [
-    '.card', '.hero-card', '.stat-card', '.about-profile-card',
+    '.card', '.stat-card', '.about-profile-card',
     '.about-stat', '.contact-form-card', '.contact-info-card',
-    '.chat-bubble-wrap', '#aboutPhoto3d'
+    '.chat-bubble-wrap'
   ].join(',');
 
   function getTiltTargets(){
@@ -1030,6 +1076,7 @@ function closeModal() {
   }
 
   function enableTilt(){
+    if (REDUCED_MOTION) return;
     getTiltTargets().forEach(bindTilt);
   }
 

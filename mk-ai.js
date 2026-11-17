@@ -10,7 +10,7 @@
   // ── Configuration ────────────────────────────────────────────────────────────
   // Groq key enables the AI to work even when the backend server is offline.
   // Get a free key at https://console.groq.com (no credit card needed).
-  const GROQ_KEY   = '' // key handled by Cloudflare Worker;
+  const GROQ_KEY   = ''; // key handled by Cloudflare Worker
   const GROQ_MODEL = 'meta-llama/llama-4-maverick-17b-128e-instruct';
   const GROQ_MODEL_FALLBACK = 'llama-3.3-70b-versatile';
   const GROQ_URL   = 'https://api.groq.com/openai/v1/chat/completions';
@@ -300,10 +300,10 @@ CRITICAL: Never say "I'm not sure what you're asking" or "Could you be more spec
     if (/\b(aws|gcp|azure|cloud|lambda|s3|ec2|serverless|render|vercel|netlify)\b/i.test(q)) return 'cloud';
     // Study
     if (/\b(study|learn|focus|productive|tutorial\s*hell|resources|roadmap)\b/i.test(q)) return 'study';
-    // Projects
-    if (/\b(project|idea|build|portfolio|app|website|tool)\b/i.test(q)) return 'projects';
     // MK
     if (/\b(mohammed|karim|\bmk\b|portfolio|about you|who made|who built)\b/i.test(q)) return 'mk';
+    // Projects
+    if (/\b(project|idea|build|portfolio|app|website|tool)\b/i.test(q)) return 'projects';
     // Social
     if (/\b(thank|thanks|cheers|appreciated|helpful)\b/i.test(q)) return 'thanks';
     if (/\b(bye|goodbye|see you|cya|later|take care)\b/i.test(q)) return 'bye';
@@ -334,23 +334,29 @@ CRITICAL: Never say "I'm not sure what you're asking" or "Could you be more spec
     return pick(R[topic] || R.unclear, topic);
   }
 
+  // ── Build chat messages (system prompt + alternating history + user text) ───
+  function buildMessages(text, priorHistory) {
+    const msgs = [{ role: 'system', content: SYSTEM_PROMPT }];
+    priorHistory.forEach(m => {
+      if (m && (m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string') {
+        if (msgs[msgs.length - 1].role !== m.role) {
+          msgs.push({ role: m.role, content: m.content.slice(0, 2000) });
+        }
+      }
+    });
+    if (msgs[msgs.length - 1].role !== 'user') {
+      msgs.push({ role: 'user', content: text });
+    } else {
+      msgs[msgs.length - 1].content = text;
+    }
+    return msgs;
+  }
+
   // ── Direct Groq API call (browser fallback — no server needed) ───────────────
   async function callGroqDirect(text, priorHistory) {
     if (!GROQ_KEY) return null;
     try {
-      const msgs = [{ role: 'system', content: SYSTEM_PROMPT }];
-      priorHistory.forEach(m => {
-        if ((m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string') {
-          if (!msgs.length || msgs[msgs.length - 1].role !== m.role) {
-            msgs.push({ role: m.role, content: m.content.slice(0, 2000) });
-          }
-        }
-      });
-      if (!msgs.length || msgs[msgs.length - 1].role !== 'user') {
-        msgs.push({ role: 'user', content: text });
-      } else {
-        msgs[msgs.length - 1].content = text;
-      }
+      const msgs = buildMessages(text, priorHistory);
       // Try primary model first, fall back to secondary on error
       let res = await fetchWithTimeout(GROQ_URL, {
         method: 'POST',
@@ -393,7 +399,7 @@ CRITICAL: Never say "I'm not sure what you're asking" or "Could you be more spec
       const res = await fetchWithTimeout(`${backendBase}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: text, history: priorHistory })
+        body: JSON.stringify({ messages: buildMessages(text, priorHistory), message: text, history: priorHistory })
       }, 12000);
 
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -615,17 +621,25 @@ CRITICAL: Never say "I'm not sure what you're asking" or "Could you be more spec
   // ── Markdown → HTML formatter ────────────────────────────────────────────────
   function formatText(raw) {
     let s = raw
+      .replace(/\x00/g, '')
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;');
 
-    s = s.replace(/```[\w]*\n?([\s\S]*?)```/g, (_, code) =>
-      `\x00PRE\x00${code.trim()}\x00ENDPRE\x00`
-    );
+    // Pull fenced and inline code out first so bold/italic/list parsing can't touch it
+    const blocks = [];
+    s = s.replace(/```[^\n`]*\n?([\s\S]*?)```/g, (_, code) => {
+      blocks.push(code.trim());
+      return `\x00PRE${blocks.length - 1}\x00`;
+    });
+    const codes = [];
+    s = s.replace(/`([^`\n]+)`/g, (_, c) => {
+      codes.push(c);
+      return `\x00IC${codes.length - 1}\x00`;
+    });
 
     s = s.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
     s = s.replace(/(?<!\*)\*(?!\*)(.*?)(?<!\*)\*(?!\*)/g, '<em>$1</em>');
-    s = s.replace(/`([^`\n]+)`/g, '<code class="inline-code">$1</code>');
 
     const lines = s.split('\n');
     const out   = [];
@@ -653,8 +667,11 @@ CRITICAL: Never say "I'm not sure what you're asking" or "Could you be more spec
     if (inOl) out.push('</ol>');
 
     s = out.join('\n').replace(/\n(?!<\/?(ul|ol|li|div))/g, '<br>');
-    s = s.replace(/\x00PRE\x00([\s\S]*?)\x00ENDPRE\x00/g,
-      (_, code) => `<pre class="code-block"><code>${code}</code></pre>`
+    s = s.replace(/\x00IC(\d+)\x00/g,
+      (_, i) => `<code class="inline-code">${codes[+i]}</code>`
+    );
+    s = s.replace(/\x00PRE(\d+)\x00/g,
+      (_, i) => `<pre class="code-block"><code>${blocks[+i]}</code></pre>`
     );
 
     return s;
